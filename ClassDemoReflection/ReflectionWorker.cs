@@ -41,12 +41,19 @@ namespace ClassDemoReflection
             setIdMethod.Invoke(o, new object[] { 12 });
             Console.WriteLine("Person after call " + o);
 
-            PropertyInfo idprop = t.GetProperties().First(p => p.Name == "Id");
-            Object resObj = idprop.GetMethod.Invoke(o, null);
-            Console.WriteLine($"Id prop is {idprop.Name} value {resObj}" );
+            PropertyInfo idprop = t.GetProperty("Id");
+            Console.WriteLine($"Id prop is {idprop.Name} value {idprop.GetValue(o)}" );
 
 
-            Recursive(23);
+            //Recursive(23);
+
+            Person p = o as Person;
+            Console.WriteLine("new ext.method  " + p.GetUpperName());
+
+            var aPerson = new {p.Name, OddNumber = p.Id % 2 == 1};
+            Console.WriteLine($"new person name={aPerson.Name} id i s odd {aPerson.OddNumber}");
+
+
         }
 
         public void Recursive(int number)
@@ -63,6 +70,8 @@ namespace ClassDemoReflection
             // call recursive with a smaller problem
             Recursive(number - 1);
 
+
+
         }
     }
 
@@ -75,6 +84,15 @@ namespace ClassDemoReflection
         public override string ToString()
         {
             return $"{nameof(Name)}: {Name}, {nameof(Id)}: {Id}";
+        }
+    }
+
+    internal static class PersonExtension
+    {
+
+        public static string GetUpperName(this Person p)
+        {
+            return p.Name.ToUpper();
         }
     }
 }
